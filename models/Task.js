@@ -1,5 +1,6 @@
 const sequelize = require('../db/connect')
 const {DataTypes} = require('sequelize')
+const User = require("./User");
 
 const Task = sequelize.define('task', {
     task_id: {
@@ -15,10 +16,17 @@ const Task = sequelize.define('task', {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    user_id: {
+    role: {
         type: DataTypes.STRING,
         defaultValue: 'USER'
-    }
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: 'user_id',
+        }
+    },
 })
 
 module.exports = Task

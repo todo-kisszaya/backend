@@ -2,6 +2,8 @@ require('dotenv').config()
 const sequelize = require('./db/connect')
 const cors = require('cors')
 
+require('./models/index')
+
 const express = require('express')
 const app = express()
 
