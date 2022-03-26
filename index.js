@@ -8,11 +8,17 @@ const app = express()
 const authRouter = require('./routes/auth')
 const tasksRouter = require('./routes/tasks')
 
+const errorHandlerMiddleware = require('./middleware/error-handler')
+const notFound = require('./middleware/not-found')
+
 app.use(cors())
 app.use(express.json())
 
 app.use('/api/tasks', tasksRouter)
 app.use('/api/auth', authRouter)
+
+app.use(notFound)
+app.use(errorHandlerMiddleware)
 
 const PORT = process.env.PORT
 
