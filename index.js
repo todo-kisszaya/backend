@@ -12,13 +12,14 @@ const tasksRouter = require('./routes/tasks')
 
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFound = require('./middleware/not-found')
+const authenticateUser = require('./middleware/authentication')
 
 require('./models')
 
 app.use(cors())
 app.use(express.json())
 
-app.use('/api/tasks', tasksRouter)
+app.use('/api/tasks', authenticateUser, tasksRouter)
 app.use('/api/auth', authRouter)
 
 app.use(notFound)
