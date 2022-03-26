@@ -1,5 +1,7 @@
 const sequelize = require('../db/connect')
 const {DataTypes} = require('sequelize')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 const User = sequelize.define('user', {
     user_id: {
@@ -13,12 +15,34 @@ const User = sequelize.define('user', {
     },
     password: {
         type: DataTypes.STRING,
-        unique: true
     },
     role: {
         type: DataTypes.STRING,
         defaultValue: 'USER'
     }
 })
+
+User.addHook('beforeValidate', async (user, options) => {
+    //const salt = await bcrypt.getSalt(10)
+    //const salt = await bcrypt.genSalt(10)
+    console.log("salt", 'mew')
+    //user.password = await bcrypt.hash(user.password, salt)
+})
+
+User.prototype.createJWT = function () {
+    return jwt.sign(
+        {userId: this.user_id, email: this.email},
+        process.env.JWT_SECRET,
+        {
+            expiresIn: process.env.JWT_LIFETIME,
+        }
+    )
+}
+
+User.prototype.comparePassword = async function (possiblePassword) {
+    const isMatch = possiblePassword === this.password
+    //const isMatch = await bcrypt.compare(possiblePassword, this.password)
+    return isMatch
+}
 
 module.exports = User

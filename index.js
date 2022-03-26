@@ -2,8 +2,6 @@ require('dotenv').config()
 const sequelize = require('./db/connect')
 const cors = require('cors')
 
-require('./models/index')
-
 const express = require('express')
 const app = express()
 
@@ -12,6 +10,8 @@ const tasksRouter = require('./routes/tasks')
 
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFound = require('./middleware/not-found')
+
+require('./models')
 
 app.use(cors())
 app.use(express.json())
