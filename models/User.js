@@ -45,7 +45,7 @@ User.prototype.createJWT = function () {
 }
 
 User.prototype.comparePassword = async function (candidatePassword) {
-    const isMatch = candidatePassword === this.password
+    const isMatch = await bcrypt.compare(candidatePassword, this.password)
     return isMatch
 }
 
