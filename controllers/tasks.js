@@ -1,21 +1,81 @@
+const {Task} = require('../models')
+const {NotFoundError, BadRequestError} = require('../errors')
+
 const createTask = async (req, res) => {
-    res.status(200).json({msg: "createTask"})
+    req.body.user_id = req.user.userId
+    const task = await Task.create({...req.body})
+    res.status(200).json({task})
 }
 
 const getTask = async (req, res) => {
-    res.status(200).json({msg: "getTask"})
+    const {
+        params: {id: taskId},
+        user: {userId}
+    } = req
+
+    const task = await Task.findOne({
+        where: {
+            user_id: userId, task_id: taskId
+        }
+    })
+
+    if (!task) {
+        throw new NotFoundError(`No task with id ${taskId}`)
+    }
+
+    res.status(200).json({task})
 }
 
 const updateTask = async (req, res) => {
-    res.status(200).json({msg: "updateTask"})
+    const {
+        params: {id: taskId},
+        user: {userId},
+        body: {completed, name}
+    } = req
+
+    if (completed === '' || name === '') {
+        throw new BadRequestError('Completed or Name fields cannot be empty')
+    }
+
+    let task = await Task.findOne({
+        where: {
+            user_id: userId, task_id: taskId
+        }
+    })
+
+    if (!task) {
+        throw new NotFoundError(`No task with id ${taskId}`)
+    }
+
+    task.completed = completed;
+    task.name = name;
+    task.save()
+    res.status(200).json({task})
 }
 
 const deleteTask = async (req, res) => {
-    res.status(200).json({msg: "deleteTask"})
+    const {
+        params: {id: taskId},
+        user: {userId}
+    } = req
+
+    const task = await Task.findOne({
+        where: {
+            user_id: userId, task_id: taskId
+        }
+    })
+    if (!task) {
+        throw new NotFoundError(`No task with id ${taskId}`)
+    }
+
+    task.destroy()
+    task.save()
+    res.status(200).json({msg: "good"})
 }
 
 const getAllTasks = async (req, res) => {
-    res.status(200).json({msg: "getAllTasks"})
+    const tasks = await Task.findAll({where: {user_id: req.user.userId}, order: [['updatedAt', 'DESC']]})
+    res.status(200).json({tasks})
 }
 
 module.exports = {
