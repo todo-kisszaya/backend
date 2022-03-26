@@ -22,11 +22,14 @@ const User = sequelize.define('user', {
     }
 })
 
-User.addHook('beforeValidate', async (user, options) => {
-    //const salt = await bcrypt.getSalt(10)
-    //const salt = await bcrypt.genSalt(10)
-    console.log("salt", 'mew')
-    //user.password = await bcrypt.hash(user.password, salt)
+// User.addHook('beforeValidate', async (user, options) => {
+//     const salt = await bcrypt.genSalt(10)
+//     user.password = await bcrypt.hash(user.password, salt)
+// })
+
+User.beforeValidate(async function (user) {
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(user.password, salt)
 })
 
 User.prototype.createJWT = function () {
@@ -39,8 +42,8 @@ User.prototype.createJWT = function () {
     )
 }
 
-User.prototype.comparePassword = async function (possiblePassword) {
-    const isMatch = possiblePassword === this.password
+User.prototype.comparePassword = async function (candidatePassword) {
+    const isMatch = candidatePassword === this.password
     //const isMatch = await bcrypt.compare(possiblePassword, this.password)
     return isMatch
 }
