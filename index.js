@@ -1,10 +1,12 @@
 require('dotenv').config()
 require('express-async-errors');
-require('./models')
+
+const helmet = require('helmet')
+const cors = require('cors')
+const xss = require('xss-clean')
+const rateLimiter = require('express-rate-limit')
 
 const sequelize = require('./db/connect')
-const cors = require('cors')
-
 const express = require('express')
 const app = express()
 
@@ -15,10 +17,20 @@ const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFound = require('./middleware/not-found')
 const authenticateUser = require('./middleware/authentication')
 
-require('./models')
 
-app.use(cors())
+app.set('trust proxy', 1)
+app.use(rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+}))
 app.use(express.json())
+app.use(helmet())
+app.use(cors())
+app.use(xss())
+
+app.get('/', (req, res) => {
+    res.send('tasks api')
+})
 
 app.use('/api/tasks', authenticateUser, tasksRouter)
 app.use('/api/auth', authRouter)
