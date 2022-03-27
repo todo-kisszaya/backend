@@ -1,5 +1,6 @@
 require('dotenv').config()
 require('express-async-errors');
+require('./models')
 
 const sequelize = require('./db/connect')
 const cors = require('cors')

@@ -10,15 +10,10 @@ const Task = sequelize.define('task', {
     },
     name: {
         type: DataTypes.STRING,
-        unique: true,
     },
     completed: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-    },
-    role: {
-        type: DataTypes.STRING,
-        defaultValue: 'USER'
     },
     user_id: {
         type: DataTypes.INTEGER,
