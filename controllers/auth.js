@@ -29,6 +29,7 @@ const login = async (req, res) => {
     res.status(200).json({ user: { email: user.email }, token })
 }
 
+
 module.exports = {
     register, login
 }

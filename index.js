@@ -12,6 +12,7 @@ const app = express()
 
 const authRouter = require('./routes/auth')
 const tasksRouter = require('./routes/tasks')
+const tokenRoutes = require('./routes/token')
 
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFound = require('./middleware/not-found')
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/tasks', authenticateUser, tasksRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/token', tokenRoutes)
 
 app.use(notFound)
 app.use(errorHandlerMiddleware)
