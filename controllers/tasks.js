@@ -74,7 +74,13 @@ const deleteTask = async (req, res) => {
 }
 
 const getAllTasks = async (req, res) => {
-    const tasks = await Task.findAll({where: {user_id: req.user.userId}, order: [['updatedAt', 'DESC']]})
+    const {completed} = req.query
+    let queryObject = {user_id: req.user.userId};
+
+    if (completed) {
+        queryObject.completed = completed === 'true'
+    }
+    const tasks = await Task.findAll({where: queryObject, order: [['updatedAt', 'DESC']]})
     res.status(200).json({tasks})
 }
 
